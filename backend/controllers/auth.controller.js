@@ -1,11 +1,12 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
+import { errorHandler } from "../utils/errorHandler.js";
 
-export const signUp = async (req, res) => {
+export const signUp = async (req, res,next) => {
     const { username, emailId, password } = req.body;
 
     if (!username || !emailId || !password || username === "" || emailId === "" || password === "") {
-        return res.status(400).json("Invalid details !!");
+        return next(errorHandler(400, "Invalid input field values !!"));
     }
 
     try {
@@ -19,6 +20,6 @@ export const signUp = async (req, res) => {
         return res.json({ message: "Signup Successful !!", data: savedUser });
     }
     catch (err) {
-        return res.status(500).json({ message: err.message });
+        return next(err);
     }
 };
